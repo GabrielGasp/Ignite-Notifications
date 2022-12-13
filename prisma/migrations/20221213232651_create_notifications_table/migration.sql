@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Notification" (
-    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "id" TEXT NOT NULL,
     "recipient_id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "category" TEXT NOT NULL,

@@ -22,6 +22,7 @@
     "paths": {
       "@core/*": ["src/core/*"],
       "@infra/*": ["src/infra/*"],
+      "@helpers/*": ["src/helpers/*"],
       "@test/*": ["test/*"]
     },
     "resolveJsonModule": true

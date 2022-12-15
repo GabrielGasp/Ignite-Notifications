@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "83130383-8303-4a47-944d-92c5bed2f9ce",
+		"name": "IGNITE NOTIFICATION",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18672686"
+	},
+	"item": [
+		{
+			"name": "CREATE NOTIFICATION",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipientId\": \"e68973c0-c3c8-40d4-91d6-cde61998042e\",\n  \"category\": \"Random Category\",\n  \"content\": \"Random Content\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/notifications",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE NOTIFICATION",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"category\": \"Updated Category\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/notifications/:id",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "8170416e-276b-4926-b50b-0c4dcc98dc40"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CANCEL NOTIFICATION",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{local}}/notifications/:id/cancel",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications",
+						":id",
+						"cancel"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "8170416e-276b-4926-b50b-0c4dcc98dc40"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "READ NOTIFICATION",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipientId\": \"e68973c0-c3c8-40d4-91d6-cde61998042e\",\n  \"category\": \"Random Category\",\n  \"content\": \"Random Content\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/notifications/:id/read",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications",
+						":id",
+						"read"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "8170416e-276b-4926-b50b-0c4dcc98dc40"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UNREAD NOTIFICATION",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipientId\": \"e68973c0-c3c8-40d4-91d6-cde61998042e\",\n  \"category\": \"Random Category\",\n  \"content\": \"Random Content\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/notifications/:id/unread",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications",
+						":id",
+						"unread"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "8170416e-276b-4926-b50b-0c4dcc98dc40"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "COUNT RECIPIENT NOTIFICATIONS",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipientId\": \"e68973c0-c3c8-40d4-91d6-cde61998042e\",\n  \"category\": \"Random Category\",\n  \"content\": \"Random Content\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/notifications/recipient/:id/count",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications",
+						"recipient",
+						":id",
+						"count"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "e68973c0-c3c8-40d4-91d6-cde61998042e"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET RECIPIENT NOTIFICATIONS",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipientId\": \"e68973c0-c3c8-40d4-91d6-cde61998042e\",\n  \"category\": \"Random Category\",\n  \"content\": \"Random Content\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/notifications/recipient/:id",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"notifications",
+						"recipient",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "e68973c0-c3c8-40d4-91d6-cde61998042e"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "localhost:3000",
+			"type": "string"
+		}
+	]
+}

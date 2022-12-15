@@ -6,11 +6,31 @@ import { PrismaNotificationMapper } from '../mappers/prisma-notification.mapper'
 
 @Injectable()
 export class PrismaNotificationRepository implements NotificationsRepository {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
+
+  async findById(id: string): Promise<Notification | null> {
+    const notification = await this.prisma.notification.findUnique({
+      where: { id },
+    });
+
+    if (!notification) return null;
+
+    return PrismaNotificationMapper.toDomain(notification);
+  }
+
 
   async create(notification: Notification): Promise<void> {
     const mappedData = PrismaNotificationMapper.toPersistence(notification);
-    await this.prismaService.notification.create({
+    await this.prisma.notification.create({
+      data: mappedData,
+    });
+  }
+
+  async update(notification: Notification): Promise<void> {
+    const mappedData = PrismaNotificationMapper.toPersistence(notification);
+
+    await this.prisma.notification.update({
+      where: { id: notification.id },
       data: mappedData,
     });
   }

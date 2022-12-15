@@ -83,8 +83,4 @@ export class Notification {
   public get updatedAt(): Date {
     return this.props.updatedAt;
   }
-
-  public setUpdateTimestamp(): void {
-    this.props.updatedAt = new Date();
-  }
 }

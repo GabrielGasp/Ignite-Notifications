@@ -3,6 +3,7 @@ import { Notification } from '@core/entities/notification/notification.entity';
 import { NotificationsRepository } from '@core/repositories/notifications.repository';
 import { PrismaService } from '../prisma.service';
 import { PrismaNotificationMapper } from '../mappers/prisma-notification.mapper';
+import { NotificationNotFoundError } from '@core/use-cases/errors/notifications/notification-not-found.error';
 
 @Injectable()
 export class PrismaNotificationRepository implements NotificationsRepository {
@@ -32,40 +33,59 @@ export class PrismaNotificationRepository implements NotificationsRepository {
     return notifications.map(PrismaNotificationMapper.toDomain);
   }
 
-  async create(notification: Notification): Promise<void> {
+  async create(notification: Notification): Promise<Notification> {
     const mappedData = PrismaNotificationMapper.toPersistence(notification);
-    await this.prisma.notification.create({
+    const createdNotification = await this.prisma.notification.create({
       data: mappedData,
     });
+
+    return PrismaNotificationMapper.toDomain(createdNotification);
   }
 
-  async update(notification: Notification): Promise<void> {
+  async update(notification: Notification): Promise<Notification> {
     const mappedData = PrismaNotificationMapper.toPersistence(notification);
+    const updatedNotification = await this.prisma.notification
+      .update({
+        where: { id: notification.id },
+        data: mappedData,
+      })
+      .catch(() => {
+        throw new NotificationNotFoundError();
+      });
 
-    await this.prisma.notification.update({
-      where: { id: notification.id },
-      data: mappedData,
-    });
+    return PrismaNotificationMapper.toDomain(updatedNotification);
   }
 
   async cancelNotification(notificationId: string): Promise<void> {
-    await this.prisma.notification.update({
-      where: { id: notificationId },
-      data: { canceledAt: new Date() },
-    });
+    await this.prisma.notification
+      .update({
+        where: { id: notificationId },
+        data: { canceledAt: new Date() },
+      })
+      .catch(() => {
+        throw new NotificationNotFoundError();
+      });
   }
 
   async readNotification(notificationId: string): Promise<void> {
-    await this.prisma.notification.update({
-      where: { id: notificationId },
-      data: { readAt: new Date() },
-    });
+    await this.prisma.notification
+      .update({
+        where: { id: notificationId },
+        data: { readAt: new Date() },
+      })
+      .catch(() => {
+        throw new NotificationNotFoundError();
+      });
   }
 
   async unreadNotification(notificationId: string): Promise<void> {
-    await this.prisma.notification.update({
-      where: { id: notificationId },
-      data: { readAt: null },
-    });
+    await this.prisma.notification
+      .update({
+        where: { id: notificationId },
+        data: { readAt: null },
+      })
+      .catch(() => {
+        throw new NotificationNotFoundError();
+      });
   }
 }

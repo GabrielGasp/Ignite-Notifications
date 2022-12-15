@@ -36,12 +36,12 @@ export class EditNotification {
       ? new Content(content)
       : notification.content;
 
-    notification.setUpdateTimestamp();
-
-    await this.notificationRepository.update(notification);
+    const updatedNotification = await this.notificationRepository.update(
+      notification,
+    );
 
     return {
-      notification,
+      notification: updatedNotification,
     };
   }
 }

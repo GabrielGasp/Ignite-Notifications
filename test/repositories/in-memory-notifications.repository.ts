@@ -22,6 +22,8 @@ export class InMemoryNotificationsRepository
 
   async create(notification: Notification) {
     this.notifications.push(notification);
+
+    return notification;
   }
 
   async update(notification: Notification) {
@@ -32,6 +34,8 @@ export class InMemoryNotificationsRepository
     }
 
     this.notifications[index] = notification;
+
+    return notification;
   }
 
   async cancelNotification(notificationId: string) {

@@ -15,6 +15,7 @@ import { CancelNotification } from '@core/use-cases/notifications/cancel-notific
 import { ReadNotification } from '@core/use-cases/notifications/read-notification.use-case';
 import { UnreadNotification } from '@core/use-cases/notifications/unread-notification.use-case';
 import { CountRecipientNotifications } from '@core/use-cases/notifications/count-recipient-notifications.use-case';
+import { GetRecipientNotifications } from '@core/use-cases/notifications/get-recipient-notifications.use-case';
 import { NotificationNotFoundError } from '@core/use-cases/errors/notifications/notification-not-found.error';
 import { UpdateNotificationDto } from '../dto/notifications/update-notification.dto';
 
@@ -27,6 +28,7 @@ export class NotificationsController {
     private readNotification: ReadNotification,
     private unreadNotification: UnreadNotification,
     private countRecipientNotification: CountRecipientNotifications,
+    private getRecipientNotifications: GetRecipientNotifications,
   ) {}
 
   @Post()
@@ -109,4 +111,12 @@ export class NotificationsController {
     return { count };
   }
 
+  @Get('recipient/:id')
+  async getFromRecipiend(@Param('id') id: string) {
+    const { notifications } = await this.getRecipientNotifications.execute({
+      recipientId: id,
+    });
+
+    return notifications.map(NotificationMapper.toHTTP);
+  }
 }

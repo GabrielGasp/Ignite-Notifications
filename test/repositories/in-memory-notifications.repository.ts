@@ -34,4 +34,24 @@ export class InMemoryNotificationsRepository
 
     this.notifications[index].cancel();
   }
+
+  async readNotification(notificationId: string) {
+    const index = this.notifications.findIndex((n) => n.id === notificationId);
+
+    if (index === -1) {
+      throw new NotificationNotFoundError();
+    }
+
+    this.notifications[index].read();
+  }
+
+  async unreadNotification(notificationId: string) {
+    const index = this.notifications.findIndex((n) => n.id === notificationId);
+
+    if (index === -1) {
+      throw new NotificationNotFoundError();
+    }
+
+    this.notifications[index].unread();
+  }
 }

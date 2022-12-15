@@ -41,4 +41,18 @@ export class PrismaNotificationRepository implements NotificationsRepository {
       data: { canceledAt: new Date() },
     });
   }
+
+  async readNotification(notificationId: string): Promise<void> {
+    await this.prisma.notification.update({
+      where: { id: notificationId },
+      data: { readAt: new Date() },
+    });
+  }
+
+  async unreadNotification(notificationId: string): Promise<void> {
+    await this.prisma.notification.update({
+      where: { id: notificationId },
+      data: { readAt: null },
+    });
+  }
 }

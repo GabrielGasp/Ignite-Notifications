@@ -11,12 +11,14 @@ import { SendNotification } from '@core/use-cases/notifications/send-notificatio
 import { CreateNotificationDto } from '../dto/notifications/create-notification.dto';
 import { NotificationMapper } from '../mappers/notification.mapper';
 import { EditNotification } from '@core/use-cases/notifications/edit-notification.use-case';
+import { CancelNotification } from '@core/use-cases/notifications/cancel-notification.use-case';
 
 @Controller('notifications')
 export class NotificationsController {
   constructor(
     private sendNotification: SendNotification,
     private editNotification: EditNotification,
+    private cancelNotification: CancelNotification,
   ) {}
 
   @Post()
@@ -44,6 +46,19 @@ export class NotificationsController {
       });
 
       return NotificationMapper.toHTTP(notification);
+    } catch (error) {
+      if (error instanceof NotificationNotFoundError) {
+        throw new NotFoundException(error.message);
+      }
+    }
+  }
+
+  @Patch(':id/cancel')
+  async cancel(@Param('id') id: string) {
+    try {
+      await this.cancelNotification.execute({ notificationId: id });
+
+      return { message: 'Notification canceled' };
     } catch (error) {
       if (error instanceof NotificationNotFoundError) {
         throw new NotFoundException(error.message);

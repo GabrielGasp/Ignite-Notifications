@@ -8,6 +8,7 @@ export interface NotificationProps {
   content: Content;
   readAt?: Date | null;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export class Notification {
@@ -15,13 +16,14 @@ export class Notification {
   private props: NotificationProps;
 
   constructor(
-    props: Replace<NotificationProps, { createAt?: Date }>,
+    props: Replace<NotificationProps, { createdAt?: Date; updatedAt?: Date }>,
     id?: string,
   ) {
     this._id = id ?? randomUUID();
     this.props = {
       ...props,
-      createdAt: new Date(),
+      createdAt: props.createdAt ?? new Date(),
+      updatedAt: props.updatedAt ?? new Date(),
     };
   }
 
@@ -63,5 +65,13 @@ export class Notification {
 
   public get createdAt(): Date {
     return this.props.createdAt;
+  }
+
+  public get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
+
+  public setUpdateTimestamp(): void {
+    this.props.updatedAt = new Date();
   }
 }

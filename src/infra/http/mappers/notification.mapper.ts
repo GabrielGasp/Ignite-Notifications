@@ -7,7 +7,9 @@ export class NotificationMapper {
       recipientId: notification.recipientId,
       category: notification.category,
       content: notification.content.value,
+      readAt: notification.readAt,
       createdAt: notification.createdAt,
+      updatedAt: notification.updatedAt,
     };
   }
 }

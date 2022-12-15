@@ -18,6 +18,7 @@ model Notification {
   readAt      DateTime? @map("read_at")
   canceledAt  DateTime? @map("canceled_at")
   createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @default(now()) @map("updated_at")
 
   @@index([recipientId])
 }

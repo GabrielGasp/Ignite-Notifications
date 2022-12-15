@@ -6,6 +6,7 @@ import { EditNotification } from '@core/use-cases/notifications/edit-notificatio
 import { CancelNotification } from '@core/use-cases/notifications/cancel-notification.use-case';
 import { ReadNotification } from '@core/use-cases/notifications/read-notification.use-case';
 import { UnreadNotification } from '@core/use-cases/notifications/unread-notification.use-case';
+import { CountRecipientNotifications } from '@core/use-cases/notifications/count-recipient-notifications.use-case';
 
 @Module({
   imports: [DatabaseModule],
@@ -16,6 +17,7 @@ import { UnreadNotification } from '@core/use-cases/notifications/unread-notific
     CancelNotification,
     ReadNotification,
     UnreadNotification,
+    CountRecipientNotifications,
   ],
 })
 export class NotificationsModule {}

@@ -1,10 +1,6 @@
-import { IsOptional, Length } from 'class-validator';
+import { PartialType, OmitType } from '@nestjs/mapped-types';
+import { CreateNotificationDto } from './create-notification.dto';
 
-export class UpdateNotificationDto {
-  @IsOptional()
-  category?: string;
-
-  @IsOptional()
-  @Length(5, 200)
-  content?: string;
-}
+export class UpdateNotificationDto extends PartialType(
+  OmitType(CreateNotificationDto, ['recipientId'] as const),
+) {}

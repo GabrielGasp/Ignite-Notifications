@@ -28,10 +28,12 @@ export class SendNotification {
       content: new Content(content),
     });
 
-    await this.notificationRepository.create(notification);
+    const newNotification = await this.notificationRepository.create(
+      notification,
+    );
 
     return {
-      notification,
+      notification: newNotification,
     };
   }
 }

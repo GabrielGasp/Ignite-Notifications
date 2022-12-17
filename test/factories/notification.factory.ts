@@ -14,3 +14,11 @@ export function makeEntityNotification(override: Override = {}): Notification {
     ...override,
   });
 }
+
+export function makeNotificationInput() {
+  return {
+    recipientId: 'e68973c0-c3c8-40d4-91d6-cde61998042e',
+    category: 'Test Category',
+    content: 'Test Content',
+  };
+}

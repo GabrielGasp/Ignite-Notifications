@@ -1,4 +1,4 @@
-import { makeNotification } from '@test/factories/notification.factory';
+import { makeEntityNotification } from '@test/factories/notification.factory';
 import { InMemoryNotificationsRepository } from '@test/repositories/in-memory-notifications.repository';
 import { CountRecipientNotifications } from './count-recipient-notifications.use-case';
 
@@ -9,11 +9,11 @@ describe('Count recipient notifications', () => {
       notificationRepository,
     );
 
-    const notificationFromRecipient1 = makeNotification({
+    const notificationFromRecipient1 = makeEntityNotification({
       recipientId: 'recipientId-1',
     });
 
-    const notificationFromRecipient2 = makeNotification({
+    const notificationFromRecipient2 = makeEntityNotification({
       recipientId: 'recipientId-2',
     });
 

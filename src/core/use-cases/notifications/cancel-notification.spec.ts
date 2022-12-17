@@ -1,4 +1,4 @@
-import { makeNotification } from '@test/factories/notification.factory';
+import { makeEntityNotification } from '@test/factories/notification.factory';
 import { InMemoryNotificationsRepository } from '@test/repositories/in-memory-notifications.repository';
 import { NotificationNotFoundError } from '../errors/notifications/notification-not-found.error';
 import { CancelNotification } from './cancel-notification.use-case';
@@ -8,7 +8,7 @@ describe('Cancel notification', () => {
     const notificationRepository = new InMemoryNotificationsRepository();
     const cancelNotification = new CancelNotification(notificationRepository);
 
-    const notification = makeNotification();
+    const notification = makeEntityNotification();
 
     await notificationRepository.create(notification);
 

@@ -6,7 +6,7 @@ import {
 
 type Override = Partial<NotificationProps>;
 
-export function makeNotification(override: Override = {}): Notification {
+export function makeEntityNotification(override: Override = {}): Notification {
   return new Notification({
     recipientId: 'recipientId',
     category: 'category',

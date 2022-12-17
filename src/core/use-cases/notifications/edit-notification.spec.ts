@@ -1,4 +1,4 @@
-import { makeNotification } from '@test/factories/notification.factory';
+import { makeEntityNotification } from '@test/factories/notification.factory';
 import { InMemoryNotificationsRepository } from '@test/repositories/in-memory-notifications.repository';
 import { EditNotification } from './edit-notification.use-case';
 
@@ -7,7 +7,7 @@ describe('Update notification', () => {
     const notificationRepository = new InMemoryNotificationsRepository();
     const updateNotification = new EditNotification(notificationRepository);
 
-    const originalNotification = makeNotification();
+    const originalNotification = makeEntityNotification();
 
     await notificationRepository.create(originalNotification);
 

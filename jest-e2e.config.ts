@@ -4,7 +4,6 @@ import { compilerOptions } from './tsconfig.json';
 
 const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
-  // rootDir: '.',
   testEnvironment: 'node',
   testRegex: '.e2e-spec.ts$',
   transform: {
@@ -13,6 +12,7 @@ const config: Config = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
+  setupFilesAfterEnv: ['./test/jest.setup.ts'],
 };
 
 export default config;

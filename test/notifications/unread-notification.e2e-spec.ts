@@ -1,17 +1,11 @@
-import { PrismaService } from '@infra/database/prisma/prisma.service';
-import { INestApplication } from '@nestjs/common';
-import { initApp } from '@test/app-setup';
+import { app, prisma } from '@test/jest.setup';
 import { makeNotificationInput } from '@test/factories/notification.factory';
 import * as request from 'supertest';
 
 let originalNotificationId: string;
 
 describe('Unread notification', () => {
-  let app: INestApplication;
-  let prisma: PrismaService;
   beforeAll(async () => {
-    app = await initApp();
-    prisma = app.get(PrismaService);
     await prisma.cleanDatabase();
 
     const notification = await prisma.notification.create({
@@ -22,11 +16,6 @@ describe('Unread notification', () => {
     });
 
     originalNotificationId = notification.id;
-  });
-
-  afterAll(async () => {
-    await prisma.$disconnect();
-    await app.close();
   });
 
   it('should unread a notification', async () => {

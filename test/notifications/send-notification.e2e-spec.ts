@@ -1,23 +1,12 @@
-import { PrismaService } from '@infra/database/prisma/prisma.service';
-import { INestApplication } from '@nestjs/common';
-import { initApp } from '@test/app-setup';
+import { app, prisma } from '@test/jest.setup';
 import { makeNotificationInput } from '@test/factories/notification.factory';
 import * as request from 'supertest';
 
 const validNotification = makeNotificationInput();
 
 describe('Send notification', () => {
-  let app: INestApplication;
-  let prisma: PrismaService;
   beforeAll(async () => {
-    app = await initApp();
-    prisma = app.get(PrismaService);
     await prisma.cleanDatabase();
-  });
-
-  afterAll(async () => {
-    await prisma.$disconnect();
-    await app.close();
   });
 
   it('should send a notification', async () => {

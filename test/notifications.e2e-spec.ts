@@ -3,7 +3,7 @@ import { makeNotificationInput } from '@test/factories/notification.factory';
 import * as request from 'supertest';
 
 describe('Notification E2E Tests', () => {
-  describe('Send notification', () => {
+  describe('POST /notifications', () => {
     const validNotification = makeNotificationInput();
 
     beforeAll(async () => {
@@ -109,7 +109,7 @@ describe('Notification E2E Tests', () => {
     });
   });
 
-  describe('Edit notification', () => {
+  describe('PATCH /notifications/:id', () => {
     let originalNotificationId: string;
 
     beforeAll(async () => {
@@ -196,7 +196,7 @@ describe('Notification E2E Tests', () => {
     });
   });
 
-  describe('Cancel notification', () => {
+  describe('PATCH /notifications/:id/cancel', () => {
     let originalNotificationId: string;
 
     beforeAll(async () => {
@@ -236,7 +236,7 @@ describe('Notification E2E Tests', () => {
     });
   });
 
-  describe('Read notification', () => {
+  describe('PATCH /notifications/:id/read', () => {
     let originalNotificationId: string;
 
     beforeAll(async () => {
@@ -276,7 +276,7 @@ describe('Notification E2E Tests', () => {
     });
   });
 
-  describe('Unread notification', () => {
+  describe('PATCH /notifications/:id/unread', () => {
     let originalNotificationId: string;
 
     beforeAll(async () => {
@@ -319,7 +319,7 @@ describe('Notification E2E Tests', () => {
     });
   });
 
-  describe('Get recipient notifications', () => {
+  describe('GET /notifications/recipient/:id', () => {
     const notificationData = makeNotificationInput();
 
     beforeAll(async () => {
@@ -352,7 +352,7 @@ describe('Notification E2E Tests', () => {
     });
   });
 
-  describe('Count recipient notifications', () => {
+  describe('GET /notifications/recipient/:id/count', () => {
     const notificationData = makeNotificationInput();
 
     beforeAll(async () => {

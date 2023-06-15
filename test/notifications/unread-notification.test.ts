@@ -1,11 +1,17 @@
-import { app, prisma } from '@test/vitest.setup';
+import { PrismaService } from '@infra/database/prisma/prisma.service';
+import { INestApplication } from '@nestjs/common';
+import { setup } from '@test/e2e.helpers';
 import { makeNotificationInput } from '@test/factories/notification.factory';
 import request from 'supertest';
 
 describe('PATCH /notifications/:id/unread', () => {
+  let app: INestApplication;
+  let prisma: PrismaService;
   let originalNotificationId: string;
 
   beforeAll(async () => {
+    ({ app, prisma } = await setup());
+
     await prisma.cleanDatabase();
 
     const notification = await prisma.notification.create({

@@ -20,7 +20,7 @@ export async function initApp() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.init();
+  void app.init();
 }
 
 beforeAll(async () => {

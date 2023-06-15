@@ -1,4 +1,4 @@
-import { app, prisma } from '@test/jest.setup';
+import { app, prisma } from '@test/vitest.setup';
 import { makeNotificationInput } from '@test/factories/notification.factory';
 import request from 'supertest';
 

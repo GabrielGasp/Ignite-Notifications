@@ -25,6 +25,7 @@
       "@helpers/*": ["src/helpers/*"],
       "@test/*": ["test/*"]
     },
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["vitest/globals"]
   }
 }

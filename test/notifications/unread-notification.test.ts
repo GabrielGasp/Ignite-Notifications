@@ -1,38 +1,47 @@
-import { app, prisma } from '@test/jest.setup';
+import { PrismaService } from '@infra/database/prisma/prisma.service';
+import { INestApplication } from '@nestjs/common';
+import { setup } from '@test/e2e.helpers';
 import { makeNotificationInput } from '@test/factories/notification.factory';
 import request from 'supertest';
 
-describe('PATCH /notifications/:id/read', () => {
+describe('PATCH /notifications/:id/unread', () => {
+  let app: INestApplication;
+  let prisma: PrismaService;
   let originalNotificationId: string;
 
   beforeAll(async () => {
+    ({ app, prisma } = await setup());
+
     await prisma.cleanDatabase();
 
     const notification = await prisma.notification.create({
-      data: makeNotificationInput(),
+      data: {
+        ...makeNotificationInput(),
+        readAt: new Date(),
+      },
     });
 
     originalNotificationId = notification.id;
   });
 
-  it('should read a notification', async () => {
+  it('should unread a notification', async () => {
     await request(app.getHttpServer())
-      .patch(`/notifications/${originalNotificationId}/read`)
+      .patch(`/notifications/${originalNotificationId}/unread`)
       .expect(200)
       .expect({
-        message: 'Notification read',
+        message: 'Notification unread',
       });
 
     const notification = await prisma.notification.findUnique({
       where: { id: originalNotificationId },
     });
 
-    expect(notification?.readAt).not.toBeNull();
+    expect(notification?.readAt).toBeNull();
   });
 
   it('should not found a notification with invalid id', async () => {
     await request(app.getHttpServer())
-      .patch('/notifications/invalid-id/read')
+      .patch('/notifications/invalid-id/unread')
       .expect(404)
       .expect({
         statusCode: 404,

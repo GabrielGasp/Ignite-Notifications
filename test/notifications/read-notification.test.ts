@@ -21,6 +21,11 @@ describe('PATCH /notifications/:id/read', () => {
     originalNotificationId = notification.id;
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+    await app.close();
+  });
+
   it('should read a notification', async () => {
     await request(app.getHttpServer())
       .patch(`/notifications/${originalNotificationId}/read`)

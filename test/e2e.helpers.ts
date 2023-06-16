@@ -4,6 +4,14 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 
 export async function setup() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('please provide a database url');
+  }
+
+  const url = new URL(process.env.DATABASE_URL);
+  url.pathname = `test_${process.env.VITEST_POOL_ID}`;
+  process.env.DATABASE_URL = url.toString();
+
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();

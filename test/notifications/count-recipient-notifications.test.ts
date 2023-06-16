@@ -23,6 +23,11 @@ describe('GET /notifications/recipient/:id/count', () => {
     });
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+    await app.close();
+  });
+
   it('should count recipient notifications', async () => {
     await request(app.getHttpServer())
       .get(`/notifications/recipient/${notificationData.recipientId}/count`)

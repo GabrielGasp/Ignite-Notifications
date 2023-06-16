@@ -24,6 +24,11 @@ describe('PATCH /notifications/:id/unread', () => {
     originalNotificationId = notification.id;
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+    await app.close();
+  });
+
   it('should unread a notification', async () => {
     await request(app.getHttpServer())
       .patch(`/notifications/${originalNotificationId}/unread`)

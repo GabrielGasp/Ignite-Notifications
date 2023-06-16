@@ -23,6 +23,11 @@ describe('GET /notifications/recipient/:id', () => {
     });
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+    await app.close();
+  });
+
   it('should get recipient notifications', async () => {
     const response = await request(app.getHttpServer())
       .get(`/notifications/recipient/${notificationData.recipientId}`)

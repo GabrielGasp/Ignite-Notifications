@@ -15,6 +15,11 @@ describe('POST /notifications', () => {
     await prisma.cleanDatabase();
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+    await app.close();
+  });
+
   it('should send a notification', async () => {
     const response = await request(app.getHttpServer())
       .post('/notifications')

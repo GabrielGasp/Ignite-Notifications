@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from '@infra/database/database.module';
 import { NotificationsController } from '../controllers/notifications.controller';
 import { SendNotification } from '@core/use-cases/notifications/send-notification.use-case';
 import { EditNotification } from '@core/use-cases/notifications/edit-notification.use-case';
@@ -10,7 +9,6 @@ import { CountRecipientNotifications } from '@core/use-cases/notifications/count
 import { GetRecipientNotifications } from '@core/use-cases/notifications/get-recipient-notifications.use-case';
 
 @Module({
-  imports: [DatabaseModule],
   controllers: [NotificationsController],
   providers: [
     SendNotification,

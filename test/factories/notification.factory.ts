@@ -4,9 +4,11 @@ import {
   NotificationProps,
 } from '@core/entities/notification/notification.entity';
 
-type Override = Partial<NotificationProps>;
+type EntityDataOverride = Partial<NotificationProps>;
 
-export function makeEntityNotification(override: Override = {}): Notification {
+export function makeEntityNotification(
+  override: EntityDataOverride = {},
+): Notification {
   return new Notification({
     recipientId: 'recipientId',
     category: 'category',
@@ -15,10 +17,31 @@ export function makeEntityNotification(override: Override = {}): Notification {
   });
 }
 
-export function makeNotificationInput() {
+interface DatabaseNotification {
+  id: string;
+  recipientId: string;
+  content: string;
+  category: string;
+  canceledAt: Date | null;
+  readAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type DatabaseDataOverride = Partial<DatabaseNotification>;
+
+export function makeDatabaseNotification(
+  override?: DatabaseDataOverride,
+): DatabaseNotification {
   return {
-    recipientId: 'e68973c0-c3c8-40d4-91d6-cde61998042e',
-    category: 'Test Category',
-    content: 'Test Content',
+    id: 'any_id',
+    recipientId: 'any_recipient_id',
+    content: 'any_content',
+    category: 'any_category',
+    canceledAt: null,
+    readAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...override,
   };
 }

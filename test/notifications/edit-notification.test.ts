@@ -1,58 +1,69 @@
-import { makeNotificationInput } from '@test/factories/notification.factory';
+import { makeDatabaseNotification } from '@test/factories/notification.factory';
 import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { PrismaService } from '@infra/database/prisma/prisma.service';
 import { setup } from '@test/e2e.helpers';
+import { mockPrismaService } from '@test/mock/prisma.service';
 
 describe('PATCH /notifications/:id', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
-  let originalNotificationId: string;
+  let prisma: typeof mockPrismaService;
+
+  const notification = makeDatabaseNotification();
+  const validUpdateBody = { content: 'New Content', category: 'New Category' };
 
   beforeAll(async () => {
     ({ app, prisma } = await setup());
+  });
 
-    await prisma.cleanDatabase();
-
-    const notification = await prisma.notification.create({
-      data: makeNotificationInput(),
-    });
-
-    originalNotificationId = notification.id;
+  beforeEach(() => {
+    jest.resetAllMocks();
   });
 
   afterAll(async () => {
-    await prisma.$disconnect();
     await app.close();
   });
 
   it('should edit a notification', async () => {
+    prisma.notification.findUnique.mockResolvedValueOnce(notification);
+
+    prisma.notification.update.mockResolvedValueOnce({
+      ...notification,
+      ...validUpdateBody,
+    });
+
     const response = await request(app.getHttpServer())
-      .patch(`/notifications/${originalNotificationId}`)
+      .patch(`/notifications/${notification.id}`)
       .send({ content: 'New Content', category: 'New Category' })
       .expect(200);
 
     expect(response.body).toMatchObject({
-      id: originalNotificationId,
+      id: notification.id,
       category: 'New Category',
       content: 'New Content',
     });
 
-    const notification = await prisma.notification.findUnique({
-      where: { id: originalNotificationId },
+    expect(prisma.notification.findUnique).toHaveBeenCalledTimes(1);
+    expect(prisma.notification.findUnique).toHaveBeenCalledWith({
+      where: { id: notification.id },
     });
 
-    expect(notification).toMatchObject({
-      id: originalNotificationId,
-      category: 'New Category',
-      content: 'New Content',
+    expect(prisma.notification.update).toHaveBeenCalledTimes(1);
+    expect(prisma.notification.update).toHaveBeenCalledWith({
+      where: { id: notification.id },
+      data: {
+        id: notification.id,
+        recipientId: notification.recipientId,
+        category: validUpdateBody.category,
+        content: validUpdateBody.content,
+        createdAt: notification.createdAt,
+      },
     });
   });
 
   it('should not edit a notification with invalid content', async () => {
     await request(app.getHttpServer())
-      .patch(`/notifications/${originalNotificationId}`)
-      .send({ content: '' })
+      .patch(`/notifications/${notification.id}`)
+      .send({ ...validUpdateBody, content: '' })
       .expect(400)
       .expect({
         statusCode: 400,
@@ -65,8 +76,8 @@ describe('PATCH /notifications/:id', () => {
 
     const longContent = 'a'.repeat(201);
     await request(app.getHttpServer())
-      .patch(`/notifications/${originalNotificationId}`)
-      .send({ content: longContent })
+      .patch(`/notifications/${notification.id}`)
+      .send({ ...validUpdateBody, content: longContent })
       .expect(400)
       .expect({
         statusCode: 400,
@@ -77,7 +88,7 @@ describe('PATCH /notifications/:id', () => {
 
   it('should forbid non whitelisted properties', async () => {
     await request(app.getHttpServer())
-      .patch(`/notifications/${originalNotificationId}`)
+      .patch(`/notifications/${notification.id}`)
       .send({ unknownProperty: 'unknown' })
       .expect(400)
       .expect({
@@ -88,6 +99,8 @@ describe('PATCH /notifications/:id', () => {
   });
 
   it('should not found a notification with invalid id', async () => {
+    prisma.notification.findUnique.mockResolvedValueOnce(null);
+
     await request(app.getHttpServer())
       .patch('/notifications/invalid-id')
       .send({ content: 'New Content' })
@@ -97,5 +110,10 @@ describe('PATCH /notifications/:id', () => {
         message: 'Notification not found',
         error: 'Not Found',
       });
+
+    expect(prisma.notification.findUnique).toHaveBeenCalledTimes(1);
+    expect(prisma.notification.findUnique).toHaveBeenCalledWith({
+      where: { id: 'invalid-id' },
+    });
   });
 });

@@ -1,62 +1,79 @@
-import { PrismaService } from '@infra/database/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { setup } from '@test/e2e.helpers';
-import { makeNotificationInput } from '@test/factories/notification.factory';
+import { makeDatabaseNotification } from '@test/factories/notification.factory';
+import { mockPrismaService } from '@test/mock/prisma.service';
+import crypto from 'node:crypto';
 import request from 'supertest';
 
 describe('POST /notifications', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
-  const validNotification = makeNotificationInput();
+  let prisma: typeof mockPrismaService;
+
+  const validCreateBody = {
+    recipientId: 'e68973c0-c3c8-40d4-91d6-cde61998042e',
+    category: 'Test Category',
+    content: 'Test Content',
+  };
 
   beforeAll(async () => {
     ({ app, prisma } = await setup());
+  });
 
-    await prisma.cleanDatabase();
+  beforeEach(() => {
+    jest.resetAllMocks();
   });
 
   afterAll(async () => {
-    await prisma.$disconnect();
     await app.close();
   });
 
   it('should send a notification', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2023-01-01T00:00:00.000Z'));
+
+    const uuid = 'e68973c0-c3c8-40d4-91d6-cde61998042e';
+    jest.spyOn(crypto, 'randomUUID').mockReturnValueOnce(uuid);
+
+    const createResolvedValue = makeDatabaseNotification({
+      ...validCreateBody,
+      id: uuid,
+    });
+    prisma.notification.create.mockResolvedValueOnce(createResolvedValue);
+
     const response = await request(app.getHttpServer())
       .post('/notifications')
-      .send(validNotification)
+      .send(validCreateBody)
       .expect(201);
 
     expect(response.body).toEqual({
-      id: expect.any(String),
-      recipientId: validNotification.recipientId,
-      category: validNotification.category,
-      content: validNotification.content,
+      id: uuid,
+      recipientId: validCreateBody.recipientId,
+      category: validCreateBody.category,
+      content: validCreateBody.content,
       readAt: null,
       canceledAt: null,
-      createdAt: expect.any(String),
-      updatedAt: expect.any(String),
+      createdAt: createResolvedValue.createdAt.toISOString(),
+      updatedAt: createResolvedValue.updatedAt.toISOString(),
     });
 
-    const notification = await prisma.notification.findUnique({
-      where: { id: response.body.id },
+    expect(prisma.notification.create).toHaveBeenCalledTimes(1);
+    expect(prisma.notification.create).toHaveBeenCalledWith({
+      data: {
+        id: uuid,
+        recipientId: validCreateBody.recipientId,
+        category: validCreateBody.category,
+        content: validCreateBody.content,
+        createdAt: new Date('2023-01-01T00:00:00.000Z'),
+      },
     });
 
-    expect(notification).toEqual({
-      id: response.body.id,
-      recipientId: response.body.recipientId,
-      category: response.body.category,
-      content: response.body.content,
-      readAt: null,
-      canceledAt: null,
-      createdAt: expect.any(Date),
-      updatedAt: expect.any(Date),
-    });
+    jest.useRealTimers();
   });
 
   it('should not send a notification with invalid recipientId', async () => {
     await request(app.getHttpServer())
       .post('/notifications')
-      .send({ ...validNotification, recipientId: '' })
+      .send({ ...validCreateBody, recipientId: '' })
       .expect(400)
       .expect({
         statusCode: 400,
@@ -71,7 +88,7 @@ describe('POST /notifications', () => {
   it('should not send a notification with invalid category', async () => {
     await request(app.getHttpServer())
       .post('/notifications')
-      .send({ ...validNotification, category: '' })
+      .send({ ...validCreateBody, category: '' })
       .expect(400)
       .expect({
         statusCode: 400,
@@ -83,7 +100,7 @@ describe('POST /notifications', () => {
   it('should not send a notification with invalid content', async () => {
     await request(app.getHttpServer())
       .post('/notifications')
-      .send({ ...validNotification, content: '' })
+      .send({ ...validCreateBody, content: '' })
       .expect(400)
       .expect({
         statusCode: 400,
@@ -97,7 +114,7 @@ describe('POST /notifications', () => {
     const longContent = 'a'.repeat(201);
     await request(app.getHttpServer())
       .post('/notifications')
-      .send({ ...validNotification, content: longContent })
+      .send({ ...validCreateBody, content: longContent })
       .expect(400)
       .expect({
         statusCode: 400,
@@ -109,7 +126,7 @@ describe('POST /notifications', () => {
   it('should forbid non whitelisted properties', async () => {
     await request(app.getHttpServer())
       .post('/notifications')
-      .send({ ...validNotification, unknownProperty: 'unknown' })
+      .send({ ...validCreateBody, unknownProperty: 'unknown' })
       .expect(400)
       .expect({
         statusCode: 400,
